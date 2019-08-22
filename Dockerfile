@@ -33,13 +33,12 @@ RUN bash download.sh \
 	&& make erase=1 patch build gdb \
 	&& bash cleanup.sh
 
-
-WORKDIR /opt/toolchains/dc/kos/utils/kmgenc 
-RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh ; make'
+WORKDIR /opt/toolchains/dc/kos/utils
+RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh ; make -C kmgenc; make -C genromfs'
 
 # Build KOS-/Ports
 WORKDIR /opt/toolchains/dc/kos
-RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh ; make && make kos-ports_all'
+RUN bash -c 'source /opt/toolchains/dc/kos/environ.sh ; make -j5 && make -j5 kos-ports_all'
 
 FROM debian:stretch
 COPY --from=builder /opt/toolchains/dc /opt/toolchains/dc
