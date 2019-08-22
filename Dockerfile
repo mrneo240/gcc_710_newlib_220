@@ -2,6 +2,9 @@ FROM gcc:7.4 as builder
 MAINTAINER HaydenKow <hayden@hkowsoftware.com>
 ENV DEBIAN_FRONTEND noninteractive
 
+WORKDIR /src
+RUN git clone https://github.com/mrneo240/gcc_710_newlib_220.git .
+
 # Prerequirements / second line for libs / third line for mksdiso & img4dc
 # Build Toolchain 
 RUN apt-get update \
@@ -17,6 +20,7 @@ RUN apt-get update \
     && mkdir -p /opt/toolchains/dc \
 	&& git clone --depth=1 git://git.code.sf.net/p/cadcdev/kallistios /opt/toolchains/dc/kos  \
 	&& git clone --depth=1 --recursive git://git.code.sf.net/p/cadcdev/kos-ports /opt/toolchains/dc/kos-ports \
+    && rm -rf /opt/toolchains/dc/kos-ports/libGL \
     && cp /opt/toolchains/dc/kos/doc/environ.sh.sample /opt/toolchains/dc/kos/environ.sh \
     && sed -i 's/-fno-rtti//' /opt/toolchains/dc/kos/environ.sh \
     && sed -i 's/-fno-exceptions//' /opt/toolchains/dc/kos/environ.sh \
